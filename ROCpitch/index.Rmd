@@ -1,0 +1,83 @@
+---
+title       : ROC Curves
+subtitle    : Shiny app to enhance ROC curve understanding
+author      : JM Lamiell
+job         : Coursera Developing Data Products Course
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Concept
+
+1. Use this Shiny app to enhance your understanding of ROC curves.
+2. ROC curves provide a way to assess binary classifiers.
+3. Binary classifiers use a discriminator to distinguish two groups.
+4. For example, blood pressure could be used to distinguish hypertensives and normals.
+5. Or, glucose could be used to distinguish diabetics and normals.
+6. One must select a discriminator threshold to classify the two groups.
+7. Discriminator threshold value determines classifier performance.
+8. Classifier performance is assessed by true and false positive rates.
+9. Classifier performance is also assessed by the area under curve (AUC).
+
+---
+
+## Concept (continued)
+
+10. This app provides two discriminator normal distributions.
+11. The two groups are to be classified based on discriminator value.
+12. The group means and standard deviations are slider-adjustable.
+13. A ROC curve is created from these distributions.
+14. The discriminator threshold value is slider-adjustable.
+15. Use the sliders to see how adjustable parameters change the ROC curve.
+16. View the curves on the Plots tab.
+
+---
+
+## Here are app distributions with means -1 and 1, standard deviations 1, and threshold 0.5
+
+``` {r, echo = FALSE}
+library(ggplot2)
+x <- seq(-3, 3, 6/200)
+pdf1 <- dnorm(x, -1, 1)
+pdf2 <- dnorm(x, 1, 1)
+df <- data.frame(x, pdf1, pdf2)
+ggplot(data.frame(x, pdf1, pdf2), aes(x)) +
+        geom_line(aes(y = pdf1), color = 'yellow', size = 1.1) +
+        geom_line(aes(y = pdf2), color = 'black', size = 1.1) +
+        ggtitle('Discriminator distribution functions') + xlab('Discriminator value') + ylab('') +
+        geom_vline(xintercept = 0.5, color = 'red', size = 1.1)
+```
+
+---
+
+## This is the associated app generated ROC curve
+
+``` {r, echo = FALSE, warning = FALSE}
+library(ggplot2)
+library(MESS)
+t <- seq(-6, 6, 12/200)
+fp <- pnorm(t, -1, 1, lower.tail = FALSE)
+tp <- pnorm(t, 1, 1, lower.tail = FALSE)
+fpt <- pnorm(0.5, -1, 1, lower.tail = FALSE)
+tpt <- pnorm(0.5, 1, 1, lower.tail = FALSE)
+df <- data.frame(fp, tp, fpt, tpt)
+if (-1 < 1) {
+        A <- round(auc(fp, tp), 3)
+        ggplot(df) + geom_line(aes(x = fp, y = tp), color = 'black', size = 1.1) +
+                ggtitle('ROC curve') + xlab('False positive rate (1 - specificity)') +
+                ylab('True positive rate (sensitivity)') +
+                annotate('text', x = 0.75, y = 0.25, label = paste('AUC =', A)) +
+                geom_point(aes(fpt, tpt), colocr = 'red', size = 4)
+} else {
+                A <- round(auc(tp, fp), 3)
+                ggplot(df) + geom_line(aes(x = tp, y = fp), color = 'black', size = 1.1) +
+                        ggtitle('ROC curve') + xlab('False positive rate (1 - specificity)') +
+                        ylab('True positive rate (sensitivity)') +
+                        annotate('text', x = 0.75, y = 0.25, label = paste('AUC =', A)) +
+                        geom_point(aes(tpt, fpt), color = 'red', size = 4)
+}
+```

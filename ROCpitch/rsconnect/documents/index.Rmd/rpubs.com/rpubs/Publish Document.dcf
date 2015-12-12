@@ -1,0 +1,7 @@
+name: Publish Document
+account: rpubs
+server: rpubs.com
+bundleId:
+        https://api.rpubs.com/api/v1/document/134502/c3547c9a22414d9f8013aba6207b9a5d
+url: http://rpubs.com/jlamiell/134502
+when: 1449955817.5334
