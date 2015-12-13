@@ -1,6 +1,6 @@
 # Coursera Developing Data Products Project
 
-This application has been created as a course project for the first run (Jun 2 - Jul 1, 2014) of the Developing Data Products course.
+The shiny application for this project can be viewed [here](https://jlamiell.shinyapps.io/myapp).
 
 original version is tagged as a courseSubmission
 supporting presentation can be viewed on GitHub.
